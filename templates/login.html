@@ -22,7 +22,7 @@
           <div id="signinButton">
           <span class="g-signin"
             data-scope="email"
-            data-clientid="YOUR_CLIENT_ID_GOES_HERE.apps.googleusercontent.com"
+            data-clientid="941012229094-klvc5a7u3k0o955u2t1vl231suqemtuv.apps.googleusercontent.com"
             data-redirecturi="postmessage"
             data-accesstype="offline"
             data-cookiepolicy="single_host_origin"
@@ -69,11 +69,11 @@ function signInCallback(authResult) {
 <script>
   window.fbAsyncInit = function() {
   FB.init({
-    appId      : 'PASTE_YOUR_APP_ID_HERE',
+    appId      : '164511654254502',
     cookie     : true,  // enable cookies to allow the server to access
                         // the session
     xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.8' // use version 2.8
+    version    : 'v2.11' // use version 2.8
   });
   };
   // Load the SDK asynchronously
@@ -118,15 +118,15 @@ function signInCallback(authResult) {
 <button>
 
 
-          <fb:login-button scope="email" onlogin="sendTokenToServer();">
-<a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+  <fb:login-button scope="email" onlogin="sendTokenToServer();">
+    <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
 
-</fb:login-button>
+  </fb:login-button>
 
 
-        </button>
+</button>
 <!--END FACEBOOK SIGN IN -->
 
-  </body>
+</body>
 
-  </html>
+</html>
