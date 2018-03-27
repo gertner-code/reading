@@ -2,4 +2,13 @@
 {% block content %}
 {% include "header.html" %}
 
+<div class="genres">
+{% for genre in genres %}
+		<a href = "{{url_for('showBooks', genre_id = genre.id)}}">
+			<div class="row">
+						<h2>{{genre.name}}</h2>
+			</div>
+		</a>
+{% endfor %}
+</div>
 {% endblock %}
