@@ -80,7 +80,6 @@ def fbconnect():
     # print "API JSON result: %s" % result
     data = json.loads(result)
     login_session['provider'] = 'facebook'
-    login_session['username'] = data["name"]
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
@@ -231,7 +230,26 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-
+# Disconnect based on provider
+@app.route('/disconnect')
+def disconnect():
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['gplus_id']
+            del login_session['access_token']
+            del login_session['user_id']
+        if login_session['provider'] == 'facebook':
+            fbdisconnect()
+            del login_session['facebook_id']
+            del login_session['email']
+            del login_session['user_id']
+            del login_session['provider']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showRestaurants'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('home'))
 
 
 @app.route('/<int:genre_id>/books') #shows books in genre
