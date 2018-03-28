@@ -29,6 +29,8 @@ Base.metadata.bind = engine
 @app.route('/')
 @app.route('/home')
 def home():
+    genres = session.query(Genre).order_by(asc(Genre.name))
+        return render_template('home.html', genres=genres)
 
 #Login section
 
