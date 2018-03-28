@@ -4,13 +4,15 @@ Genre
 name
 id
 
-Book info
+Book
 Title
 Author/s
 Original Published Year
 Synopsis
 id
+user_id
+genre_id
 
-Users
+User
 email
 id
