@@ -264,8 +264,25 @@ def showBooks(genre_id):
     else:
         return render_template('showBooks.html', books=books, genre=genre, user=login_session['user_id'])
 
-@app.route('/<int:genre_id>/new')
-def newBook():
+@app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
+def newBook(genre_id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+    if request.method == 'POST':
+        newBook = Book(
+                        title=request.form['title'],
+                        user_id=login_session['user_id'],
+                        author=request.form['author'],
+                        published=request.form['published'],
+                        synopsis=request.form['synopsis'],
+                        genre_id=genre_id
+                      )
+        session.add(newBook)
+        flash('%s Successfully Added' % newBook.title)
+        session.commit()
+        return redirect(url_for('showBooks', genre_id=genre_id))
+    else:
+        return render_template('newBook.html')
 
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
 def editBook(id):
