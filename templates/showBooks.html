@@ -2,4 +2,51 @@
 {% block content %}
 {% include "header.html" %}
 
+
+<div class="row banner menu">
+		<div class="Title">
+			<h1>{{ genre.name }}</h1>
+		</div>
+</div>
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
+	<div>
+
+		<div>
+			<a href="{{url_for('newBook', genre_id = genre_id )}}">
+				<button class="btn btn-default" id="new-book">
+					<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Add Book to this Genre
+				</button>
+			</a>
+		</div>
+
+	</div>
+
+	{% if books != [] %}
+		<div class="row">
+					{% for book in books %}
+							<div class="book">
+								<p>{{book.name}}</p>
+								<p>{{book.author}}</p>
+                {% if book.user_id = user %}
+								<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> | 
+								<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
+							</div>
+					{% endfor %}
+			</div>
+
+	{% endif %}
+
 {% endblock %}
