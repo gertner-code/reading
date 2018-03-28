@@ -254,11 +254,17 @@ def disconnect():
         return redirect(url_for('home'))
 
 
-@app.route('/<int:genre_id>/books') #shows books in genre
-@app.route('/<string:author>/books') #shows books by clicked Author
-def showBooks():
+@app.route('/<int:genre_id>/') #shows books in genre
+@app.route('/<int:genre_id>/books')
+def showBooks(genre_id):
+    genre = session.query(Genre).filter_by(id=genre_id).one()
+    books = session.query(Book).filter_by(genre_id=genre_id).all()
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('publicBooks.html', books=books, genre=genre)
+    else:
+        return render_template('showBooks.html', books=books, genre=genre)
 
-@app.route('/new')
+@app.route('/<int:genre_id>/new')
 def newBook():
 
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
