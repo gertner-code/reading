@@ -3,10 +3,9 @@
 {% include "header.html" %}
 
 
-<div class="row banner menu">
-		<div class="Title">
-			<h1>{{ genre.name }}</h1>
-		</div>
+
+<div class="Title">
+	<h1>{{ genre.name }}</h1>
 </div>
 
 <div class = 'flash'>
@@ -41,9 +40,10 @@
 								<p>{{book.name}}</p>
 								<p>{{book.author}}</p>
                 {% if book.user_id = user %}
-								<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> | 
+								<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
 								<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
-							</div>
+                {% endif %}
+              </div>
 					{% endfor %}
 			</div>
 

@@ -1,0 +1,36 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
+
+<div class="Title">
+	<h1>{{ genre.name }}</h1>
+</div>
+
+<div class = 'flash'>
+		{% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
+	{% if books != [] %}
+		<div class="row">
+					{% for book in books %}
+							<div class="book">
+								<p>{{book.name}}</p>
+								<p>{{book.author}}</p>
+							</div>
+					{% endfor %}
+		</div>
+
+	{% endif %}
+
+{% endblock %}
