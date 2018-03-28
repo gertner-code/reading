@@ -259,10 +259,10 @@ def disconnect():
 def showBooks(genre_id):
     genre = session.query(Genre).filter_by(id=genre_id).one()
     books = session.query(Book).filter_by(genre_id=genre_id).all()
-    if 'username' not in login_session or creator.id != login_session['user_id']:
+    if 'user_id' not in login_session:
         return render_template('publicBooks.html', books=books, genre=genre)
     else:
-        return render_template('showBooks.html', books=books, genre=genre)
+        return render_template('showBooks.html', books=books, genre=genre, user=login_session['user_id'])
 
 @app.route('/<int:genre_id>/new')
 def newBook():
