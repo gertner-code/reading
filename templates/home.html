@@ -2,4 +2,26 @@
 {% block content %}
 {% include "header.html" %}
 
+<div class="flash">
+	{% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+        <ul>
+          {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+          {% endfor %}
+        </ul>
+    {% endif %}
+  {% endwith %}
+</div>
+
+<div class="genres">
+{% for genre in genres %}
+		<a href = "{{url_for('showBooks', genre_id = genre.id)}}">
+			<div class="row">
+						<h2>{{genre.name}}</h2>
+			</div>
+		</a>
+{% endfor %}
+</div>
 {% endblock %}
