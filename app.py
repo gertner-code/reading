@@ -273,7 +273,6 @@ def newBook(genre_id):
                         title=request.form['title'],
                         user_id=login_session['user_id'],
                         author=request.form['author'],
-                        published=request.form['published'],
                         synopsis=request.form['synopsis'],
                         genre_id=genre_id
                       )
