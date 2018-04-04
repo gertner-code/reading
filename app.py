@@ -284,13 +284,14 @@ def newBook(genre_id):
         return render_template('newBook.html')
 
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
-def editBook(id):
+def editBook(genre_id, id):
+
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
-def deleteBook(id):
+def deleteBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/details')
-def bookDetails(id):
+def bookDetails(genre_id, id):
 
 
 #JSON API Endpoints
@@ -298,6 +299,11 @@ def bookDetails(id):
 @app.route('books/<int:id>/JSON')
 def bookJSON(id):
 """Returns details of requested book."""
+
+@app.route('books/<int:genre_id>/JSON')
+def genreJSON(genre_id):
+"""Returns details of all books in requested genre."""
+
 @app.route('books/JSON')
 def allbooksJSON():
 """Returns details of all books broken up by genre."""
