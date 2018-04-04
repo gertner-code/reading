@@ -307,6 +307,18 @@ def editBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
 def deleteBook(genre_id, id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+    bookToDelete = session.query(Book).filter_by(id=id).one()
+    if login_session['user_id'] != bookToDelete.user_id
+        return "<script>function myFunction() {alert('You are not authorized to delete this book. A book can only be deleted by the user that added it.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        session.commit()
+        flash('Book Successfully Deleted')
+        return redirect(url_for('showBooks', genre_id=genre_id))
+    else:
+        return render_template('deleteBook.html', genre_id=genre_id, id=id, item=bookToDelete)
 
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
