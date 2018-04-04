@@ -7,7 +7,6 @@ id
 Book
 Title
 Author/s
-Original Published Year
 Synopsis
 id
 user_id
