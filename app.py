@@ -285,6 +285,24 @@ def newBook(genre_id):
 
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
 def editBook(genre_id, id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+    editedBook = session.query(Book).filter_by(id=id).one()
+    if login_session['user_id'] != editedBook.user_id
+        return "<script>function myFunction() {alert('You are not authorized to edit this book. A book can only be editted by the user that added it.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        if request.form['title']:
+            editedBook.title = request.form['title']
+        if request.form['author']:
+            editedBook.author = request.form['author']
+        if request.form['price']:
+            editedBook.synopsis = request.form['synopsis']
+        session.add(editedBook)
+        session.commit()
+        flash('Book Successfully Edited')
+        return redirect(url_for('showBooks', genre_id=genre_id))
+    else:
+        return render_template('editBook.html', genre_id=genre_id, id=id, item=editedBook)
 
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
