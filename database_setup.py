@@ -48,7 +48,6 @@ class Book(Base):
             'title': self.title,
             'author': self.author,
             'id': self.id,
-            'published': self.published,
             'synopsis': self.synopsis,
         }
 
