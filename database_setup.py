@@ -35,7 +35,6 @@ class Book(Base):
     title = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
     author = Column(String(250))
-    published = Column(String(4))
     synopsis = Column(String(250))
     genre_id = Column(Integer, ForeignKey('genre.id'))
     genre = relationship(Genre)
