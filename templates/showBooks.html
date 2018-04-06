@@ -8,8 +8,8 @@
 	<h1>{{ genre.name }}</h1>
 </div>
 
-<div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
+<div class = "flash">
+		{% with messages = get_flashed_messages() %}
       {% if messages %}
 
         <ul>
@@ -40,8 +40,8 @@
 								<p>{{book.name}}</p>
 								<p>{{book.author}}</p>
                 {% if book.user_id = user %}
-								<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
-								<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
+									<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
+									<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
                 {% endif %}
               </div>
 					{% endfor %}

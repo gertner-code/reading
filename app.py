@@ -270,7 +270,6 @@ def showBooks(genre_id):
                                user=login_session['user_id'])
 
 
-
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
 def newBook(genre_id):
     if 'user_id' not in login_session:
@@ -313,7 +312,7 @@ def editBook(genre_id, id):
         return redirect(url_for('showBooks', genre_id=genre_id))
     else:
         return render_template('editBook.html', genre_id=genre_id, id=id,
-                               item=editedBook)
+                               book=editedBook)
 
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
@@ -332,7 +331,7 @@ def deleteBook(genre_id, id):
         return redirect(url_for('showBooks', genre_id=genre_id))
     else:
         return render_template('deleteBook.html', genre_id=genre_id, id=id,
-                               item=bookToDelete)
+                               book=bookToDelete)
 
 
 @app.route('/<int:genre_id>/<int:id>/details')
