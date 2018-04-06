@@ -13,7 +13,6 @@ class User(Base):
     email = Column(String(250), nullable=False)
 
 
-
 class Genre(Base):
     __tablename__ = 'genre'
 
@@ -22,7 +21,7 @@ class Genre(Base):
 
     @property
     def serialize(self):
-        """Return object data in easily serializeable format"""
+        """Return object data in easily serializeable format."""
         return {
             'name': self.name,
             'id': self.id,
@@ -43,7 +42,7 @@ class Book(Base):
 
     @property
     def serialize(self):
-        """Return object data in easily serializeable format"""
+        """Return object data in easily serializeable format."""
         return {
             'title': self.title,
             'author': self.author,
