@@ -270,6 +270,7 @@ def showBooks(genre_id):
                                user=login_session['user_id'])
 
 
+
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
 def newBook(genre_id):
     if 'user_id' not in login_session:
