@@ -8,8 +8,8 @@
 	<h1>{{ genre.name }}</h1>
 </div>
 
-<div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
+<div class = "flash">
+		{% with messages = get_flashed_messages() %}
       {% if messages %}
 
         <ul>
@@ -37,11 +37,15 @@
 		<div class="row">
 					{% for book in books %}
 							<div class="book">
-								<p>{{book.name}}</p>
+								{% if book.user_id = user %}
+									<a href='{{url_for('bookDetails_withLinks', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
+								{% else %}
+									<a href='{{url_for('bookDetails', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
+								{% endif %}
 								<p>{{book.author}}</p>
                 {% if book.user_id = user %}
-								<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
-								<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
+									<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
+									<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
                 {% endif %}
               </div>
 					{% endfor %}
