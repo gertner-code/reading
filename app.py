@@ -25,14 +25,16 @@ session = DBSession()
 engine = create_engine('sqlite:///reading_catalog.db')
 Base.metadata.bind = engine
 
-#Shows Genres in a list
+
+# Shows Genres in a list
 @app.route('/')
 @app.route('/home')
 def home():
     genres = session.query(Genre).order_by(asc(Genre.name))
-        return render_template('home.html', genres=genres)
+    return render_template('home.html', genres=genres)
 
-#Login section
+# Login section
+
 
 # Create anti-forgery state token
 @app.route('/login')
@@ -53,7 +55,6 @@ def fbconnect():
     access_token = request.data
     print "access token received %s " % access_token
 
-
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
     app_secret = json.loads(
@@ -63,15 +64,15 @@ def fbconnect():
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
-
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
     '''
-        Due to the formatting for the result from the server token exchange we have to
-        split the token first on commas and select the first index which gives us the key : value
-        for the server access token then we split it on colons to pull out the actual token value
-        and replace the remaining quotes with nothing so that it can be used directly in the graph
-        api calls
+        Due to the formatting for the result from the server token exchange we
+        have to split the token first on commas and select the first index
+        which gives us the key : value for the server access token then we
+        split it on colons to pull out the actual token value and replace the
+        remaining quotes with nothing so that it can be used directly in the
+        graph api calls
     '''
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
@@ -158,7 +159,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('Current user is already '
+                                            'connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -228,9 +230,11 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('''Failed to revoke token for given
+                                               user.''', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
 
 # Disconnect based on provider
 @app.route('/disconnect')
@@ -254,7 +258,7 @@ def disconnect():
         return redirect(url_for('home'))
 
 
-@app.route('/<int:genre_id>/') #shows books in genre
+@app.route('/<int:genre_id>/')  # shows books in genre
 @app.route('/<int:genre_id>/books')
 def showBooks(genre_id):
     genre = session.query(Genre).filter_by(id=genre_id).one()
@@ -262,7 +266,9 @@ def showBooks(genre_id):
     if 'user_id' not in login_session:
         return render_template('publicBooks.html', books=books, genre=genre)
     else:
-        return render_template('showBooks.html', books=books, genre=genre, user=login_session['user_id'])
+        return render_template('showBooks.html', books=books, genre=genre,
+                               user=login_session['user_id'])
+
 
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
 def newBook(genre_id):
@@ -283,13 +289,16 @@ def newBook(genre_id):
     else:
         return render_template('newBook.html')
 
+
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
 def editBook(genre_id, id):
     if 'user_id' not in login_session:
         return redirect('/login')
     editedBook = session.query(Book).filter_by(id=id).one()
     if login_session['user_id'] != editedBook.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to edit this book. A book can only be editted by the user that added it.');}</script><body onload='myFunction()'>"
+        return '''<script>function myFunction() {alert('You are not authorized
+               to edit this book. A book can only be editted by the user that
+               added it.');}</script><body onload='myFunction()'>'''
     if request.method == 'POST':
         if request.form['title']:
             editedBook.title = request.form['title']
@@ -302,7 +311,8 @@ def editBook(genre_id, id):
         flash('Book Successfully Edited')
         return redirect(url_for('showBooks', genre_id=genre_id))
     else:
-        return render_template('editBook.html', genre_id=genre_id, id=id, item=editedBook)
+        return render_template('editBook.html', genre_id=genre_id, id=id,
+                               item=editedBook)
 
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
@@ -311,14 +321,18 @@ def deleteBook(genre_id, id):
         return redirect('/login')
     bookToDelete = session.query(Book).filter_by(id=id).one()
     if login_session['user_id'] != bookToDelete.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to delete this book. A book can only be deleted by the user that added it.');}</script><body onload='myFunction()'>"
+        return '''<script>function myFunction() {alert('You are not authorized
+                  to delete this book. A book can only be deleted by the user
+                  that added it.');}</script><body onload='myFunction()'>'''
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
         flash('Book Successfully Deleted')
         return redirect(url_for('showBooks', genre_id=genre_id))
     else:
-        return render_template('deleteBook.html', genre_id=genre_id, id=id, item=bookToDelete)
+        return render_template('deleteBook.html', genre_id=genre_id, id=id,
+                               item=bookToDelete)
+
 
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
@@ -326,21 +340,25 @@ def bookDetails(genre_id, id):
     if login_session['user_id'] != book.user_id:
         return render_template('bookDetails.html', genre_id=genre_id, id=id)
     else:
-        return render_template('bookDetails_withLinks.html', genre_id=genre_id, id=id, user=login_session['user_id'])
+        return render_template('bookDetails_withLinks.html', genre_id=genre_id,
+                               id=id, user=login_session['user_id'])
 
-#JSON API Endpoints
+# JSON API Endpoints
+
 
 @app.route('books/<int:id>/JSON')
 def bookJSON(id):
-"""Returns details of requested book."""
+    """Returns details of requested book."""
+
 
 @app.route('books/<int:genre_id>/JSON')
 def genreJSON(genre_id):
-"""Returns details of all books in requested genre."""
+    """Returns details of all books in requested genre."""
+
 
 @app.route('books/JSON')
 def allbooksJSON():
-"""Returns details of all books broken up by genre."""
+    """Returns details of all books broken up by genre."""
 
 
 if __name__ == '__main__':
