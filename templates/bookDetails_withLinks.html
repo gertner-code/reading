@@ -2,4 +2,15 @@
 {% block content %}
 {% include "header.html" %}
 
+<div class="book">
+  <p>{{book.name}}</p>
+  <p>{{book.author}}</p>
+  <p>{{book.synopsis}}</p>
+
+  {% if book.user_id = user %}
+    <a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
+    <a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
+  {% endif %}
+</div>
+
 {% endblock %}

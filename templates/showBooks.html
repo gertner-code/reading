@@ -37,7 +37,11 @@
 		<div class="row">
 					{% for book in books %}
 							<div class="book">
-								<p>{{book.name}}</p>
+								{% if book.user_id = user %}
+									<a href='{{url_for('bookDetails_withLinks', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
+								{% else %}
+									<a href='{{url_for('bookDetails', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
+								{% endif %}
 								<p>{{book.author}}</p>
                 {% if book.user_id = user %}
 									<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |

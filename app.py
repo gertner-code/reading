@@ -338,10 +338,10 @@ def deleteBook(genre_id, id):
 def bookDetails(genre_id, id):
     book = session.query(Book).filter_by(id=id).one()
     if login_session['user_id'] != book.user_id:
-        return render_template('bookDetails.html', genre_id=genre_id, id=id)
+        return render_template('bookDetails.html', book=book)
     else:
         return render_template('bookDetails_withLinks.html', genre_id=genre_id,
-                               id=id, user=login_session['user_id'])
+                               id=id, book=book, user=login_session['user_id'])
 
 # JSON API Endpoints
 
