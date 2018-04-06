@@ -288,7 +288,7 @@ def editBook(genre_id, id):
     if 'user_id' not in login_session:
         return redirect('/login')
     editedBook = session.query(Book).filter_by(id=id).one()
-    if login_session['user_id'] != editedBook.user_id
+    if login_session['user_id'] != editedBook.user_id:
         return "<script>function myFunction() {alert('You are not authorized to edit this book. A book can only be editted by the user that added it.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['title']:
@@ -310,7 +310,7 @@ def deleteBook(genre_id, id):
     if 'user_id' not in login_session:
         return redirect('/login')
     bookToDelete = session.query(Book).filter_by(id=id).one()
-    if login_session['user_id'] != bookToDelete.user_id
+    if login_session['user_id'] != bookToDelete.user_id:
         return "<script>function myFunction() {alert('You are not authorized to delete this book. A book can only be deleted by the user that added it.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(itemToDelete)
@@ -322,7 +322,11 @@ def deleteBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
-
+    book = session.query(Book).filter_by(id=id).one()
+    if login_session['user_id'] != book.user_id:
+        return render_template('bookDetails.html', genre_id=genre_id, id=id)
+    else:
+        return render_template('bookDetails_withLinks.html', genre_id=genre_id, id=id, user=login_session['user_id'])
 
 #JSON API Endpoints
 
