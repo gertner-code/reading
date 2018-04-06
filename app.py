@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem, User
+from database_setup import Genre, Book, User, Base
 from flask import session as login_session
 import random
 import string
@@ -349,16 +349,22 @@ def bookDetails(genre_id, id):
 @app.route('books/<int:id>/JSON')
 def bookJSON(id):
     """Returns details of requested book."""
+    book = session.query(Book).filter_by(id=id).one()
+    return jsonify(Book=book.serialize)
 
 
 @app.route('books/<int:genre_id>/JSON')
 def genreJSON(genre_id):
     """Returns details of all books in requested genre."""
+    books = session.query(Book).filter_by(genre_id=genre_id).all()
+    return jsonify(Book=[book.serialize for book in books])
 
 
 @app.route('books/JSON')
 def allbooksJSON():
     """Returns details of all books broken up by genre."""
+    books = session.query(Book).all()
+    return jsonify(Book=[book.serialize for book in books])
 
 
 if __name__ == '__main__':
