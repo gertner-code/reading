@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Restaurant, Base, MenuItem, User
+from database_setup import Genre, Book, User, Base
 
 engine = create_engine('sqlite:///reading_catalog.db')
 
