@@ -304,7 +304,7 @@ def editBook(genre_id, id):
             editedBook.title = request.form['title']
         if request.form['author']:
             editedBook.author = request.form['author']
-        if request.form['price']:
+        if request.form['synopsis']:
             editedBook.synopsis = request.form['synopsis']
         session.add(editedBook)
         session.commit()
@@ -325,7 +325,7 @@ def deleteBook(genre_id, id):
                   to delete this book. A book can only be deleted by the user
                   that added it.');}</script><body onload='myFunction()'>'''
     if request.method == 'POST':
-        session.delete(itemToDelete)
+        session.delete(bookToDelete)
         session.commit()
         flash('Book Successfully Deleted')
         return redirect(url_for('showBooks', genre_id=genre_id))
