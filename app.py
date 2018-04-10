@@ -17,12 +17,12 @@ app = Flask(__name__)
 CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Reading Catalog"
-
+engine = create_engine('sqlite:///reading_catalog.db')
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Connect to Database and create database session
-engine = create_engine('sqlite:///reading_catalog.db')
+
 Base.metadata.bind = engine
 
 
@@ -53,7 +53,7 @@ def fbconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
-    print "access token received %s " % access_token
+    print("access token received %s ") % access_token
 
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
@@ -152,7 +152,7 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
+        print("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -346,21 +346,21 @@ def bookDetails(genre_id, id):
 # JSON API Endpoints
 
 
-@app.route('books/<int:id>/JSON')
+@app.route('/books/<int:id>/JSON')
 def bookJSON(id):
     """Returns details of requested book."""
     book = session.query(Book).filter_by(id=id).one()
     return jsonify(Book=book.serialize)
 
 
-@app.route('books/<int:genre_id>/JSON')
+@app.route('/books/<int:genre_id>/JSON')
 def genreJSON(genre_id):
     """Returns details of all books in requested genre."""
     books = session.query(Book).filter_by(genre_id=genre_id).all()
     return jsonify(Book=[book.serialize for book in books])
 
 
-@app.route('books/JSON')
+@app.route('/books/JSON')
 def allbooksJSON():
     """Returns details of all books broken up by genre."""
     books = session.query(Book).all()
