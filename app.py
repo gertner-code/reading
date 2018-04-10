@@ -232,7 +232,7 @@ def gdisconnect():
         return response
     else:
         response = make_response(json.dumps('''Failed to revoke token for given
-                                               user.''', 400))
+                                               user.'''), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -253,7 +253,7 @@ def disconnect():
             del login_session['user_id']
             del login_session['provider']
         flash("You have successfully been logged out.")
-        return redirect(url_for('showRestaurants'))
+        return redirect(url_for('home'))
     else:
         flash("You were not logged in")
         return redirect(url_for('home'))
@@ -337,7 +337,7 @@ def deleteBook(genre_id, id):
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
     book = session.query(Book).filter_by(id=id).one()
-    if login_session['user_id'] != book.user_id:
+    if 'user_id' not in login_session or login_session['user_id'] != book.user_id:
         return render_template('bookDetails.html', book=book)
     else:
         return render_template('bookDetails_withLinks.html', genre_id=genre_id,
@@ -368,6 +368,7 @@ def allbooksJSON():
 
 
 if __name__ == '__main__':
+    app.run(ssl_context='adhoc')
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
