@@ -60,8 +60,8 @@ def fbconnect():
         'web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+    url = ('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (  # NOQA
+        app_id, app_secret, access_token))
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
@@ -77,7 +77,7 @@ def fbconnect():
     '''
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
+    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')
     # print "url sent for API access:%s"% url
@@ -102,7 +102,8 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = ('https://graph.facebook.com/%s/permissions?access_token=%s' %
+           (facebook_id, access_token))
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -208,7 +209,7 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except Server Error:
         return None
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
@@ -267,7 +268,8 @@ def showBooks(genre_id):
     if 'user_id' not in login_session:
         return render_template('publicBooks.html', books=books, genre=genre)
     else:
-        return render_template('showBooks.html', books=books, genre=genre, user=login_session['user_id'])
+        return render_template('showBooks.html', books=books, genre=genre,
+                               user=login_session['user_id'])
 
 
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
@@ -337,7 +339,7 @@ def deleteBook(genre_id, id):
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
     book = session.query(Book).filter_by(id=id).one()
-    if 'user_id' not in login_session or login_session['user_id'] != book.user_id:
+    if 'user_id' not in login_session or login_session['user_id'] != book.user_id:  # NOQA
         return render_template('bookDetails.html', book=book)
     else:
         return render_template('bookDetails_withLinks.html', genre_id=genre_id,
