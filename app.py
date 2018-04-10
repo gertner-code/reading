@@ -79,7 +79,7 @@ def fbconnect():
 
     url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
     h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
+    result = h.request(url, 'GET')[1].decode('utf-8')
     # print "url sent for API access:%s"% url
     # print "API JSON result: %s" % result
     data = json.loads(result)
@@ -267,8 +267,7 @@ def showBooks(genre_id):
     if 'user_id' not in login_session:
         return render_template('publicBooks.html', books=books, genre=genre)
     else:
-        return render_template('showBooks.html', books=books, genre=genre,
-                               user=login_session['user_id'])
+        return render_template('showBooks.html', books=books, genre=genre, user=login_session['user_id'])
 
 
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])

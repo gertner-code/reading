@@ -24,7 +24,7 @@
 	<div>
 
 		<div>
-			<a href="{{url_for('newBook', genre_id = genre_id )}}">
+			<a href="{{url_for('newBook', genre_id = genre.id )}}">
 				<button class="btn btn-default" id="new-book">
 					<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Add Book to this Genre
 				</button>
@@ -37,13 +37,13 @@
 		<div class="row">
 					{% for book in books %}
 							<div class="book">
-								{% if book.user_id = user %}
-									<a href='{{url_for('bookDetails_withLinks', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
+								{% if book.user_id == user: %}
+									<a href='{{url_for('bookDetails', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
 								{% else %}
 									<a href='{{url_for('bookDetails', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
 								{% endif %}
 								<p>{{book.author}}</p>
-                {% if book.user_id = user %}
+                {% if book.user_id == user: %}
 									<a href='{{url_for('editBook', genre_id = genre.id, id=book.id ) }}'>Edit</a> |
 									<a href='{{url_for('deleteBook', genre_id = genre.id, id=book.id ) }}'>Delete</a>
                 {% endif %}
