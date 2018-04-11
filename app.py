@@ -263,6 +263,7 @@ def disconnect():
 @app.route('/<int:genre_id>/')  # shows books in genre
 @app.route('/<int:genre_id>/books')
 def showBooks(genre_id):
+    '''Shows books in selected genre.'''
     genre = session.query(Genre).filter_by(id=genre_id).one()
     books = session.query(Book).filter_by(genre_id=genre_id).all()
     if 'user_id' not in login_session:
@@ -274,6 +275,7 @@ def showBooks(genre_id):
 
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
 def newBook(genre_id):
+    '''Adds new books to DB.'''
     if 'user_id' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
@@ -294,6 +296,7 @@ def newBook(genre_id):
 
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
 def editBook(genre_id, id):
+    '''Allows editting of books entered by the current user.'''
     if 'user_id' not in login_session:
         return redirect('/login')
     editedBook = session.query(Book).filter_by(id=id).one()
@@ -319,6 +322,7 @@ def editBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
 def deleteBook(genre_id, id):
+    '''Allows a user to delete a book they have previously entered.'''
     if 'user_id' not in login_session:
         return redirect('/login')
     bookToDelete = session.query(Book).filter_by(id=id).one()
@@ -338,6 +342,7 @@ def deleteBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
+    '''Shows full details of slected book.'''
     book = session.query(Book).filter_by(id=id).one()
     if 'user_id' not in login_session or login_session['user_id'] != book.user_id:  # NOQA
         return render_template('bookDetails.html', book=book)
