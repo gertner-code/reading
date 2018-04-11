@@ -18,12 +18,12 @@ app = Flask(__name__)
 CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Reading Catalog"
-engine = create_engine('sqlite:///reading_catalog.db')
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
 
 # Connect to Database and create database session
 
+engine = create_engine('sqlite:///reading_catalog.db')
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 Base.metadata.bind = engine
 
 
