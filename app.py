@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+
+"""First iteration of website designed to catalog books of interest."""
+
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 from flask import flash
 from sqlalchemy import create_engine, asc
@@ -31,6 +36,7 @@ Base.metadata.bind = engine
 @app.route('/')
 @app.route('/home')
 def home():
+    """Home page, show list of genres."""
     genres = session.query(Genre).order_by(asc(Genre.name))
     return render_template('home.html', genres=genres)
 
@@ -40,6 +46,7 @@ def home():
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
+    """Show login page."""
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
@@ -49,6 +56,7 @@ def showLogin():
 
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """Connect with Facebook."""
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -67,14 +75,14 @@ def fbconnect():
 
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
-    '''
+    """
         Due to the formatting for the result from the server token exchange we
         have to split the token first on commas and select the first index
         which gives us the key : value for the server access token then we
         split it on colons to pull out the actual token value and replace the
         remaining quotes with nothing so that it can be used directly in the
         graph api calls
-    '''
+    """
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
     url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token  # NOQA
@@ -99,6 +107,7 @@ def fbconnect():
 
 @app.route('/fbdisconnect')
 def fbdisconnect():
+    """Disconnect with Facebook."""
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
@@ -111,6 +120,7 @@ def fbdisconnect():
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """Login in with Google."""
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -193,6 +203,7 @@ def gconnect():
 
 
 def createUser(login_session):
+    """Create new user."""
     newUser = User(email=login_session['email'])
     session.add(newUser)
     session.commit()
@@ -201,15 +212,17 @@ def createUser(login_session):
 
 
 def getUserInfo(user_id):
+    """Get user info from OAuth."""
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def getUserID(email):
+    """Check for existance of user in User table."""
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except Exception:
         return None
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
@@ -217,6 +230,7 @@ def getUserID(email):
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    """Disconnect Google user."""
     # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -232,8 +246,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('''Failed to revoke token for given
-                                               user.'''), 400)
+        response = make_response(json.dumps("""Failed to revoke token for given
+                                               user."""), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -241,6 +255,7 @@ def gdisconnect():
 # Disconnect based on provider
 @app.route('/disconnect')
 def disconnect():
+    """Disconnect based on log-in provider."""
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
@@ -263,7 +278,7 @@ def disconnect():
 @app.route('/<int:genre_id>/')  # shows books in genre
 @app.route('/<int:genre_id>/books')
 def showBooks(genre_id):
-    '''Shows books in selected genre.'''
+    """Show books in selected genre."""
     genre = session.query(Genre).filter_by(id=genre_id).one()
     books = session.query(Book).filter_by(genre_id=genre_id).all()
     if 'user_id' not in login_session:
@@ -275,7 +290,7 @@ def showBooks(genre_id):
 
 @app.route('/<int:genre_id>/new', methods=['GET', 'POST'])
 def newBook(genre_id):
-    '''Adds new books to DB.'''
+    """Add new book to DB."""
     if 'user_id' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
@@ -296,14 +311,14 @@ def newBook(genre_id):
 
 @app.route('/<int:genre_id>/<int:id>/edit', methods=['GET', 'POST'])
 def editBook(genre_id, id):
-    '''Allows editting of books entered by the current user.'''
+    """Allow editting of books entered by the current user."""
     if 'user_id' not in login_session:
         return redirect('/login')
     editedBook = session.query(Book).filter_by(id=id).one()
     if login_session['user_id'] != editedBook.user_id:
-        return '''<script>function myFunction() {alert('You are not authorized
+        return """<script>function myFunction() {alert('You are not authorized
                to edit this book. A book can only be editted by the user that
-               added it.');}</script><body onload='myFunction()'>'''
+               added it.');}</script><body onload='myFunction()'>"""
     if request.method == 'POST':
         if request.form['title']:
             editedBook.title = request.form['title']
@@ -322,14 +337,14 @@ def editBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/delete', methods=['GET', 'POST'])
 def deleteBook(genre_id, id):
-    '''Allows a user to delete a book they have previously entered.'''
+    """Allow a user to delete a book they have previously entered."""
     if 'user_id' not in login_session:
         return redirect('/login')
     bookToDelete = session.query(Book).filter_by(id=id).one()
     if login_session['user_id'] != bookToDelete.user_id:
-        return '''<script>function myFunction() {alert('You are not authorized
+        return """<script>function myFunction() {alert('You are not authorized
                   to delete this book. A book can only be deleted by the user
-                  that added it.');}</script><body onload='myFunction()'>'''
+                  that added it.');}</script><body onload='myFunction()'>"""
     if request.method == 'POST':
         session.delete(bookToDelete)
         session.commit()
@@ -342,7 +357,7 @@ def deleteBook(genre_id, id):
 
 @app.route('/<int:genre_id>/<int:id>/details')
 def bookDetails(genre_id, id):
-    '''Shows full details of slected book.'''
+    """Show full details of slected book."""
     book = session.query(Book).filter_by(id=id).one()
     if 'user_id' not in login_session or login_session['user_id'] != book.user_id:  # NOQA
         return render_template('bookDetails.html', book=book)
@@ -355,26 +370,27 @@ def bookDetails(genre_id, id):
 
 @app.route('/books/<int:id>/JSON')
 def bookJSON(id):
-    """Returns details of requested book."""
+    """Return details of requested book."""
     book = session.query(Book).filter_by(id=id).one()
     return jsonify(Book=book.serialize)
 
 
 @app.route('/books/<int:genre_id>/JSON')
 def genreJSON(genre_id):
-    """Returns details of all books in requested genre."""
+    """Return details of all books in requested genre."""
     books = session.query(Book).filter_by(genre_id=genre_id).all()
     return jsonify(Book=[book.serialize for book in books])
 
 
 @app.route('/books/JSON')
 def allbooksJSON():
-    """Returns details of all books broken up by genre."""
+    """Return details of all books broken up by genre."""
     books = session.query(Book).all()
     return jsonify(Book=[book.serialize for book in books])
 
 
 if __name__ == '__main__':
+    """Run webpage on open."""
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
