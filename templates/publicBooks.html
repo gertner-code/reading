@@ -2,9 +2,9 @@
 {% block content %}
 {% include "header.html" %}
 
+<main>
 
-
-<div class="Title">
+<div class="title">
 	<h1>{{ genre.name }}</h1>
 </div>
 
@@ -26,11 +26,13 @@
 					{% for book in books %}
 							<div class="book">
 								<a href='{{url_for('bookDetails', genre_id = genre.id, id=book.id ) }}'>{{book.title}}</a>
-								<p>{{book.author}}</p>
+								<div>by {{book.author}}</div>
 							</div>
 					{% endfor %}
 		</div>
 
 	{% endif %}
+
+</main>
 
 {% endblock %}

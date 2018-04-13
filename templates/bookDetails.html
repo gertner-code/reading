@@ -2,10 +2,14 @@
 {% block content %}
 {% include "header.html" %}
 
-<div class="book">
-  <p>{{book.name}}</p>
-  <p>{{book.author}}</p>
+<main>
+
+<div class="details">
+  <p class="title">{{book.title}}</p>
+  <p>by {{book.author}}</p>
   <p>{{book.synopsis}}</p>
 </div>
+
+</main>
 
 {% endblock %}

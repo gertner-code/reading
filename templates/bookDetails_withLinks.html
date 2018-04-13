@@ -2,9 +2,11 @@
 {% block content %}
 {% include "header.html" %}
 
-<div class="book">
-  <p>{{book.name}}</p>
-  <p>{{book.author}}</p>
+<main>
+
+<div class="details">
+  <p class="title">{{book.title}}</p>
+  <p>by {{book.author}}</p>
   <p>{{book.synopsis}}</p>
 
   {% if book.user_id == user: %}
@@ -12,5 +14,7 @@
     <a href='{{url_for('deleteBook', genre_id = genre_id, id=book.id ) }}'>Delete</a>
   {% endif %}
 </div>
+
+</main>
 
 {% endblock %}
